@@ -35,7 +35,7 @@ export const authMiddleware = (allowedRoles: string[]) => {
             const decoded = jwt.decode(token) as DecodedToken;
             const userRole = decoded["custom: role"] || "";
 
-            // why assign this here? purpose?
+            // attach this info to the request (req.user) so downstream routes can access it.
             req.user = {
                 id: decoded.sub,
                 role: userRole,
