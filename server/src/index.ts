@@ -15,3 +15,14 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+
+/* ROUTES */
+app.get("/", (req, res) => {
+    res.send("This is home route");
+});
+
+/* SERVER */
+const port = Number(process.env.PORT) || 3002;
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Server running on port ${port}`);
+});
