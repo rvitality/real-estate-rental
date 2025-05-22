@@ -19,6 +19,7 @@ app.use(cors());
 
 /* ROUTE IMPORTS */
 import tenantRoutes from "./routes/tenant.route";
+import managerRoutes from "./routes/manager.route";
 
 /* ROUTES */
 app.get("/", (req, res) => {
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
+app.use("/managers", authMiddleware(["manager"]), managerRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3002;
