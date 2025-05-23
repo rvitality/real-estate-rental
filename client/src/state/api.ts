@@ -29,20 +29,9 @@ export const api = createApi({
                     const userRole = idToken?.payload["custom:role"] as string;
 
                     const endpoint = userRole === "manager" ? `/managers/${user.userId}` : `/tenants/${user.userId}`;
-
-                    console.log("====================================");
-                    console.log("endpoint: ", endpoint);
-                    console.log("====================================");
                     let userDetailsResponse = await fetchWithBQ(endpoint);
 
-                    console.log("====================================");
-                    console.log("userDetailsResponse: ", userDetailsResponse);
-                    console.log("====================================");
-
                     if (userDetailsResponse.error && userDetailsResponse.error.status === 404) {
-                        console.log("====================================");
-                        console.log("create new user ---");
-                        console.log("====================================");
                         userDetailsResponse = await createNewUserInDatabase(user, idToken, userRole, fetchWithBQ);
                     }
 
@@ -54,9 +43,6 @@ export const api = createApi({
                         },
                     };
                 } catch (err: any) {
-                    console.log("====================================");
-                    console.log("err: ", err);
-                    console.log("====================================");
                     return { error: err.message || "Could not fetch user data" };
                 }
             },
