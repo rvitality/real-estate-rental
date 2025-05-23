@@ -19,6 +19,25 @@ export const getManager = async (cognitoId: string): Promise<Manager> => {
     }
 };
 
+export const updateManager = async (cognitoId: string, details: Manager): Promise<Tenant> => {
+    try {
+        const { name, email, phoneNumber } = details;
+
+        const updateManager = await prisma.manager.update({
+            where: { cognitoId },
+            data: {
+                name,
+                email,
+                phoneNumber,
+            },
+        });
+
+        return updateManager;
+    } catch (err) {
+        throw err;
+    }
+};
+
 export const createManager = async (details: Manager): Promise<Manager> => {
     try {
         const { cognitoId, name, email, phoneNumber } = details;
