@@ -13,9 +13,26 @@ import Navbar from "@/components/Navbar";
 import AppSidebar from "@/components/AppSidebar";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-    const { data: authUser, isLoading: authLoading } = useGetAuthUserQuery();
+    const pathname = usePathname();
+    const router = useRouter();
+    const { data: authUser, isLoading: isAuthLoading } = useGetAuthUserQuery();
+
+    const isManager = authUser?.userRole?.toLowerCase() === "manager";
+    const isTenant = authUser?.userRole?.toLowerCase() === "tenant";
+
+    useEffect(() => {
+        if (authUser && authUser.userRole) {
+            if (isManager && !pathname.includes("/managers")) {
+                router.push("/managers/properties", { scroll: false });
+            } else if (isTenant && !pathname.includes("/tenants")) {
+                router.push("/tenants/favorites", { scroll: false });
+            }
+        }
+    }, [authUser, isManager, isTenant, router, pathname]);
 
     if (!authUser?.userRole) return null;
+    if (isAuthLoading) return <div>Loading...</div>;
+
     return (
         <SidebarProvider>
             <div className='min-h-screen w-full bg-primary-100'>

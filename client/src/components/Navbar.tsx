@@ -49,7 +49,7 @@ const Navbar = () => {
                     )}
 
                     {/* LOGO */}
-                    <Link href='/' className='cursor-pointer hover:!text-primary-300' scroll={false}>
+                    <Link href='/landing' className='cursor-pointer hover:!text-primary-300' scroll={false}>
                         <div className='flex items-center gap-3'>
                             <Image src='/logo.svg' alt='Rentiful Logo' width={24} height={24} className='w-6 h-6' />
                             <div className='text-xl font-bold'>

@@ -11,10 +11,6 @@ import Navbar from "@/components/Navbar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const { data: authUser, isLoading: authLoading } = useGetAuthUserQuery();
-
-    console.log("====================================");
-    console.log("authUser: ", authUser);
-    console.log("====================================");
     return (
         <div className='h-full w-full'>
             <Navbar />
