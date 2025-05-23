@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "Real Estate - Rental",
-    description: "",
+    description:
+        "Discover your next rental home with ease using our real estate rental app. Browse properties on an interactive map, view detailed listings, and find rentals based on location, budget, and preferences—all in one place.",
 };
 
 export default function RootLayout({
