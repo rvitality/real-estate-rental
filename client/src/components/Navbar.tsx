@@ -33,7 +33,7 @@ const Navbar = () => {
 
     const handleSignOut = async () => {
         await signOut();
-        window.location.href = "/";
+        window.location.href = "/landing";
     };
 
     return (
@@ -84,15 +84,11 @@ const Navbar = () => {
                     )}
                 </div>
                 {/* SECOND COL ------- */}
-                {/* 
                 {!isDashboardPage && (
                     <p className='text-primary-200 hidden md:block'>
                         Discover your perfect rental apartment with our advanced search
                     </p>
-                )} */}
-                <p className='text-primary-200 hidden md:block'>
-                    Discover your perfect rental apartment with our advanced search.
-                </p>
+                )}
 
                 {/* THIRD COL ------- */}
                 <div className='flex items-center gap-5'>
