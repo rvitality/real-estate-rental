@@ -124,9 +124,6 @@ const formFields = {
 
 const Auth = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuthenticator((context) => [context.user]);
-    console.log("====================================");
-    console.log(user);
-    console.log("====================================");
     const router = useRouter();
     const pathname = usePathname();
 

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { cleanParams, createNewUserInDatabase, withToast } from "@/lib/utils";
 
 // types
 import { Application, Lease, Manager, Payment, Property, Tenant } from "@/types/prismaTypes";
@@ -29,7 +30,21 @@ export const api = createApi({
 
                     const endpoint = userRole === "manager" ? `/managers/${user.userId}` : `/tenants/${user.userId}`;
 
-                    const userDetailsResponse = await fetchWithBQ(endpoint);
+                    console.log("====================================");
+                    console.log("endpoint: ", endpoint);
+                    console.log("====================================");
+                    let userDetailsResponse = await fetchWithBQ(endpoint);
+
+                    console.log("====================================");
+                    console.log("userDetailsResponse: ", userDetailsResponse);
+                    console.log("====================================");
+
+                    if (userDetailsResponse.error && userDetailsResponse.error.status === 404) {
+                        console.log("====================================");
+                        console.log("create new user ---");
+                        console.log("====================================");
+                        userDetailsResponse = await createNewUserInDatabase(user, idToken, userRole, fetchWithBQ);
+                    }
 
                     return {
                         data: {
@@ -39,6 +54,9 @@ export const api = createApi({
                         },
                     };
                 } catch (err: any) {
+                    console.log("====================================");
+                    console.log("err: ", err);
+                    console.log("====================================");
                     return { error: err.message || "Could not fetch user data" };
                 }
             },
@@ -46,4 +64,4 @@ export const api = createApi({
     }),
 });
 
-export const {} = api;
+export const { useGetAuthUserQuery } = api;

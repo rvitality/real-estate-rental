@@ -33,7 +33,7 @@ export const authMiddleware = (allowedRoles: string[]) => {
 
         try {
             const decoded = jwt.decode(token) as DecodedToken;
-            const userRole = decoded["custom: role"] || "";
+            const userRole = decoded["custom:role"] || "";
 
             // attach this info to the request (req.user) so downstream routes can access it.
             req.user = {
@@ -42,6 +42,11 @@ export const authMiddleware = (allowedRoles: string[]) => {
             };
 
             const hasAccess = allowedRoles.includes(userRole.toLowerCase());
+
+            console.log("====================================");
+            console.log("allowedRoles: ", allowedRoles);
+            console.log("userRole: ", userRole);
+            console.log("====================================");
 
             if (!hasAccess) {
                 res.status(403).json({ message: "Access Denied" });

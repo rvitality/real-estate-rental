@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+
+// middlwares
 import { authMiddleware } from "./middleware/auth.middleware";
 
 /* CONFIGURATIONS */
