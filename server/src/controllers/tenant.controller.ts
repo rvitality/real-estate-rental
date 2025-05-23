@@ -19,6 +19,18 @@ export const getTenant = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const updateTenant = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId } = req.params;
+        const { body: details } = req;
+
+        const result = await service.updateTenant(cognitoId, details);
+        res.status(200).json(result);
+    } catch (err: any) {
+        handleErrorResponse(err, req, res);
+    }
+};
+
 export const createTenant = async (req: Request, res: Response): Promise<void> => {
     try {
         const { body: details } = req;

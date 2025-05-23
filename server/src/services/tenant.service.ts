@@ -22,6 +22,25 @@ export const getTenant = async (cognitoId: string): Promise<Tenant> => {
     }
 };
 
+export const updateTenant = async (cognitoId: string, details: Tenant): Promise<Tenant> => {
+    try {
+        const { name, email, phoneNumber } = details;
+
+        const updateTenant = await prisma.tenant.update({
+            where: { cognitoId },
+            data: {
+                name,
+                email,
+                phoneNumber,
+            },
+        });
+
+        return updateTenant;
+    } catch (err) {
+        throw err;
+    }
+};
+
 export const createTenant = async (details: Tenant): Promise<Tenant> => {
     try {
         const { cognitoId, name, email, phoneNumber } = details;
