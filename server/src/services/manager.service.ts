@@ -19,7 +19,7 @@ export const getManager = async (cognitoId: string): Promise<Manager> => {
     }
 };
 
-export const updateManager = async (cognitoId: string, details: Manager): Promise<Tenant> => {
+export const updateManager = async (cognitoId: string, details: Manager): Promise<Manager> => {
     try {
         const { name, email, phoneNumber } = details;
 
