@@ -23,10 +23,9 @@ export const getProperties = async (req: Request, res: Response): Promise<void> 
 
 export const getProperty = async (req: Request, res: Response): Promise<void> => {
     try {
-        // const { payload } = req;
-        const { cognitoId } = req.params;
+        const { id: propertyId } = req.params;
 
-        const result = await service.getProperty();
+        const result = await service.getProperty(propertyId);
         res.json(result);
     } catch (err: any) {
         handleErrorResponse(err, req, res);
@@ -38,8 +37,8 @@ export const createProperty = async (req: Request, res: Response): Promise<void>
         // const { payload } = req;
         const { cognitoId } = req.params;
 
-        const result = await service.createProperty();
-        res.json(result);
+        // const result = await service.createProperty();
+        // res.json(result);
     } catch (err: any) {
         handleErrorResponse(err, req, res);
     }

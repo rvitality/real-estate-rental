@@ -1,5 +1,6 @@
 import createError from "http-errors";
 import { PrismaClient, Manager, Prisma, PropertyType, Property } from "@prisma/client";
+import { wktToGeoJSON } from "@terraformer/wkt";
 
 const prisma = new PrismaClient();
 
@@ -141,12 +142,44 @@ export const getProperties = async (queries: Partial<QueryTypes>): Promise<Prope
         throw err;
     }
 };
-export const getProperty = async (cognitoId: string): Promise<void> => {
+
+export const getProperty = async (propertyId: string): Promise<Property> => {
     try {
+        const property = await prisma.property.findUnique({
+            where: { id: Number(propertyId) },
+            include: {
+                location: true,
+            },
+        });
+
+        if (!property) {
+            throw createError.NotFound("Property not found.");
+        }
+
+        const coordinates: { coordinates: string }[] =
+            await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" WHERE id = ${property.location.id}`;
+
+        const geoJSON: any = wktToGeoJSON(coordinates[0]?.coordinates || "");
+        const longitude = geoJSON.coordinates[0];
+        const latitude = geoJSON.coordinates[1];
+
+        const propertyWithCoordinates = {
+            ...property,
+            location: {
+                ...property.location,
+                coordinates: {
+                    longitude,
+                    latitude,
+                },
+            },
+        };
+
+        return propertyWithCoordinates;
     } catch (err) {
         throw err;
     }
 };
+
 export const createProperty = async (cognitoId: string): Promise<void> => {
     try {
     } catch (err) {
