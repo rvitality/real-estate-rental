@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { PrismaClient, Manager, Prisma } from "@prisma/client";
+import { PrismaClient, Manager, Prisma, PropertyType, Property } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +18,7 @@ export interface QueryTypes {
     longitude: string;
 }
 
-export const getProperties = async (queries: Partial<QueryTypes>): Promise<void> => {
+export const getProperties = async (queries: Partial<QueryTypes>): Promise<Property> => {
     try {
         const {
             favoriteIds,
@@ -113,6 +113,30 @@ export const getProperties = async (queries: Partial<QueryTypes>): Promise<void>
                 )`
             );
         }
+
+        const completeQuery = Prisma.sql`
+            SELECT
+             p.*, 
+             json_build_object(
+                'id', l.id,
+                'address', l.address,
+                'city', l.city,
+                'state', l.state,
+                'country', l.country,
+                'postalCode', l."postalCode",
+                'coordinates', json_build_object(
+                    'longitude', ST_X(l."coordinates"::geometry),
+                    'latitude', ST_Y(l."coordinates"::geometry)
+                )
+             ) as location
+             FROM "Property" p
+             JOIN "Location" l ON p."locationId" = l.id
+             ${whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, " AND ")}` : Prisma.empty}
+        `;
+
+        const properties = (await prisma.$queryRaw(completeQuery)) as Property;
+
+        return properties;
     } catch (err) {
         throw err;
     }
