@@ -20,10 +20,6 @@ declare global {
 
 export const authMiddleware = (allowedRoles: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
-        console.log("====================================");
-        console.log("req.headers.authorization: ", req.headers.authorization);
-        console.log("====================================");
-
         const token = req.headers.authorization?.split(" ")[1];
 
         if (!token) {
@@ -42,11 +38,6 @@ export const authMiddleware = (allowedRoles: string[]) => {
             };
 
             const hasAccess = allowedRoles.includes(userRole.toLowerCase());
-
-            console.log("====================================");
-            console.log("allowedRoles: ", allowedRoles);
-            console.log("userRole: ", userRole);
-            console.log("====================================");
 
             if (!hasAccess) {
                 res.status(403).json({ message: "Access Denied" });
