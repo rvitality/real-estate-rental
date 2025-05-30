@@ -34,11 +34,11 @@ export const getProperty = async (req: Request, res: Response): Promise<void> =>
 
 export const createProperty = async (req: Request, res: Response): Promise<void> => {
     try {
-        // const { payload } = req;
-        const { cognitoId } = req.params;
+        const files = req.files as Express.Multer.File[];
+        const details = req.body;
 
-        // const result = await service.createProperty();
-        // res.json(result);
+        const result = await service.createProperty(details, files);
+        res.json(result);
     } catch (err: any) {
         handleErrorResponse(err, req, res);
     }
