@@ -41,3 +41,14 @@ export const createTenant = async (req: Request, res: Response): Promise<void> =
         handleErrorResponse(err, req, res);
     }
 };
+
+export const getCurrentResidences = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId } = req.params;
+
+        const result = await service.getCurrentResidences(cognitoId);
+        res.json(result);
+    } catch (err: any) {
+        handleErrorResponse(err, req, res);
+    }
+};
