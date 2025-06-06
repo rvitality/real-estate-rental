@@ -189,7 +189,7 @@ export const getProperty = async (propertyId: string): Promise<Property> => {
     }
 };
 
-export const createProperty = async (details: {}, files: Express.Multer.File[]): Promise<void> => {
+export const createProperty = async (details: {}, files: Express.Multer.File[]): Promise<Property> => {
     try {
         const { address, city, state, country, postalCode, managerCognitoId, ...propertyData } = details;
 
@@ -210,6 +210,60 @@ export const createProperty = async (details: {}, files: Express.Multer.File[]):
                 return uploadResult.Location;
             })
         );
+
+        const searchParams = new URLSearchParams({
+            street: address,
+            city,
+            country,
+            postalCode,
+            format: "json",
+            limit: "1",
+        }).toString();
+
+        const geocodingUrl = `https://nominatim.openstreetmap.org/search?${searchParams}`;
+
+        const geocodingResponse = await axios.get(geocodingUrl, {
+            headers: {
+                "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com",
+            },
+        });
+
+        const [longitude, latitude] =
+            geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
+                ? [parseFloat(geocodingResponse.data[0]?.lon), parseFloat(geocodingResponse.data[0]?.lat)]
+                : [0, 0];
+
+        const [location] = await prisma.$queryRaw<Location[]>`
+            INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
+            VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
+            RETURNING id, address, city, state, country, "postalCode", ST_AsText(coordinates) as coordinates;
+        `;
+
+        // create property
+        const newProperty = await prisma.property.create({
+            data: {
+                ...propertyData,
+                photoUrls,
+                locationId: location.id,
+                managerCognitoId,
+                amenities: typeof propertyData.amenities === "string" ? propertyData.amenities.split(",") : [],
+                highlights: typeof propertyData.highlights === "string" ? propertyData.highlights.split(",") : [],
+                isPetsAllowed: propertyData.isPetsAllowed === "true",
+                isParkingIncluded: propertyData.isParkingIncluded === "true",
+                pricePerMonth: parseFloat(propertyData.pricePerMonth),
+                securityDeposit: parseFloat(propertyData.securityDeposit),
+                applicationFee: parseFloat(propertyData.applicationFee),
+                beds: parseInt(propertyData.beds),
+                baths: parseFloat(propertyData.baths),
+                squareFeet: parseInt(propertyData.squareFeet),
+            },
+            include: {
+                location: true,
+                manager: true,
+            },
+        });
+
+        return newProperty;
     } catch (err) {
         throw err;
     }

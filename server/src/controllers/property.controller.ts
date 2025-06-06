@@ -38,7 +38,7 @@ export const createProperty = async (req: Request, res: Response): Promise<void>
         const details = req.body;
 
         const result = await service.createProperty(details, files);
-        res.json(result);
+        res.status(201).json(result);
     } catch (err: any) {
         handleErrorResponse(err, req, res);
     }
