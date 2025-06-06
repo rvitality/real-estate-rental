@@ -11,7 +11,7 @@ export const getManager = async (cognitoId: string): Promise<Manager> => {
         });
 
         if (!manager) {
-            throw createError.NotFound("Manager not found");
+            throw createError.NotFound("Manager not found.");
         }
 
         return manager;

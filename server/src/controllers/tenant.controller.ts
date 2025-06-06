@@ -52,3 +52,27 @@ export const getCurrentResidences = async (req: Request, res: Response): Promise
         handleErrorResponse(err, req, res);
     }
 };
+
+export const addFavoriteProperty = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId, propertyId } = req.params;
+
+        const result = await service.addFavoriteProperty(cognitoId, propertyId);
+
+        res.status(201).json(result);
+    } catch (err: any) {
+        handleErrorResponse(err, req, res);
+    }
+};
+
+export const removeFavoriteProperty = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId, propertyId } = req.params;
+
+        const result = await service.removeFavoriteProperty(cognitoId, propertyId);
+
+        res.status(204).json(result);
+    } catch (err: any) {
+        handleErrorResponse(err, req, res);
+    }
+};

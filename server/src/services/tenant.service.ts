@@ -14,7 +14,7 @@ export const getTenant = async (cognitoId: string): Promise<Tenant> => {
         });
 
         if (!tenant) {
-            throw createError.NotFound("Tenant not found");
+            throw createError.NotFound("Tenant not found.");
         }
 
         return tenant;
@@ -96,6 +96,71 @@ export const getCurrentResidences = async (cognitoId: string): Promise<Property[
 
         return residencesWithFormattedLocation;
     } catch (err) {
+        throw err;
+    }
+};
+
+export const addFavoriteProperty = async (cognitoId: string, propertyId: string): Promise<Tenant> => {
+    try {
+        const tenant = await prisma.tenant.findUnique({
+            where: { cognitoId },
+            include: { favorites: true },
+        });
+
+        if (!tenant) {
+            throw createError.NotFound("Tenant not found.");
+        }
+
+        const propertyIdNumber = Number(propertyId);
+        const existingFavorites = tenant?.favorites || [];
+
+        const isAlreadyFavorite = existingFavorites.some((fav) => fav.id === propertyIdNumber);
+
+        if (isAlreadyFavorite) {
+            throw createError.Conflict("Property already added as favorite.");
+        }
+
+        const updatedTenant = await prisma.tenant.update({
+            where: { cognitoId },
+            data: {
+                favorites: {
+                    connect: { id: propertyIdNumber },
+                },
+            },
+            include: { favorites: true },
+        });
+
+        return updatedTenant;
+    } catch (err: any) {
+        throw err;
+    }
+};
+
+export const removeFavoriteProperty = async (cognitoId: string, propertyId: string): Promise<Tenant> => {
+    try {
+        const tenant = await prisma.tenant.findUnique({
+            where: { cognitoId },
+            include: { favorites: true },
+        });
+
+        if (!tenant) {
+            throw createError.NotFound("Tenant not found.");
+        }
+
+        const propertyIdNumber = Number(propertyId);
+
+        const updatedTenant = await prisma.tenant.update({
+            where: { cognitoId },
+            data: {
+                favorites: {
+                    disconnect: { id: propertyIdNumber },
+                },
+            },
+            include: { favorites: true },
+        });
+
+        return updatedTenant;
+    } catch (err: any) {
         throw err;
     }
 };
