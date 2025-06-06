@@ -41,3 +41,14 @@ export const createManager = async (req: Request, res: Response): Promise<void> 
         handleErrorResponse(err, req, res);
     }
 };
+
+export const getManagerProperties = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId } = req.params;
+
+        const result = await service.getManagerProperties(cognitoId);
+        res.json(result);
+    } catch (err: any) {
+        handleErrorResponse(err, req, res);
+    }
+};
