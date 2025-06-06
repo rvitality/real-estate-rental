@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import axios from "axios";
 import createError from "http-errors";
 import { PrismaClient, Manager, Prisma, PropertyType, Property } from "@prisma/client";
