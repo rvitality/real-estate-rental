@@ -23,6 +23,7 @@ app.use(cors());
 import tenantRoutes from "./routes/tenant.route";
 import managerRoutes from "./routes/manager.route";
 import propertyRoutes from "./routes/property.route";
+import leaseRoutes from "./routes/lease.route";
 
 /* ROUTES */
 app.get("/", (req, res) => {
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
 app.use("/managers", authMiddleware(["manager"]), managerRoutes);
 app.use("/properties", propertyRoutes);
+app.use("/leases", leaseRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3002;
